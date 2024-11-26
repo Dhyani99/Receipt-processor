@@ -1,0 +1,124 @@
+var receiptRouter = require("express").Router();
+const Receipt = require("../receipt");
+
+receiptRouter.get("/", (req, res) => {
+  try {
+    Receipt.find({})
+      .then((data) => {
+        res.json({ data });
+      })
+      .catch((error) => {
+        res.json({ error });
+      });
+  } catch (error) {
+    res.json({ error });
+  }
+});
+
+receiptRouter.get("/:id", (req, res) => {
+  try {
+    Receipt.findById({ _id: req.params.id })
+      .then((data) => {
+        res.json({ data });
+      })
+      .catch((error) => {
+        res.json({ error });
+      });
+  } catch (error) {
+    res.json({ error });
+  }
+});
+
+function calculatePoints(data) {
+  var points = 0;
+  var retailer = data.retailer;
+  for (let i = 0; i < retailer.length; i++) {
+    const char = retailer[i];
+    if (
+      (char >= "a" && char <= "z") ||
+      (char >= "A" && char <= "Z") ||
+      (char >= "0" && char <= "9")
+    ) {
+      points++;
+    }
+  }
+  var total = data.total;
+  if (total % 1 === 0) {
+    points += 50;
+  }
+
+  if (total % 0.25 === 0) {
+    points += 25;
+  }
+
+  var items = data.items;
+  points += Math.floor(items.length / 2) * 5;
+
+  for (let item of items) {
+    if (item.shortDescription.trim().length % 3 === 0) {
+      points += Math.ceil(item.price * 0.2);
+    }
+  }
+
+  var date = data.purchaseDate;
+  const d = new Date(date);
+  if (d.getDay() % 2 != 0) {
+    points += 6;
+  }
+
+  var time = data.purchaseTime.split(":");
+  if (time[0] >= 14 && time[0] <= 16) {
+    points += 10;
+  }
+  //   var purchaseTime = new Date();
+  //   purchaseTime.setHours(time[0], time[1], 0);
+  //   var startTime = new Date();
+  //   startTime.setHours(14,0,0);
+
+  //   var endTime = new Date();
+  //   endTime.setHours(16,0,0);
+  //   if(purchaseTime >= startTime && purchaseTime <= endTime){
+  //     points+=10;
+  //   }
+  return points;
+}
+
+receiptRouter.get("/:id/points", (req, res) => {
+  try {
+    Receipt.findById({ _id: req.params.id })
+      .then((data) => {
+        var points = calculatePoints(data);
+
+        res.json({ points: points });
+      })
+      .catch((error) => {
+        res.status(404).json({ msg : 'No receipt found for that id' });
+      });
+  } catch (error) {
+    res.json({ error });
+  }
+});
+
+receiptRouter.post("/process", (req, res) => {
+  try {
+    console.log(req.body);
+    const receipt = new Receipt(req.body);
+    console.log(receipt);
+    receipt
+      .save()
+      .then((result) => {
+        return res.status(200).json({ id: result._id });
+      })
+      .catch((error) => {
+        return res.json({ error });
+      });
+    //res.status(201).json({ id: result.insertedId });
+  } catch (error) {
+    //console.log(error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+//})
+
+module.exports = receiptRouter;

@@ -10,7 +10,7 @@ connectToDatabase().then(() => {
     app.use('/receipts', receiptRouter);
     
     // Port Number
-    const PORT = process.env.PORT ||4000;
+    const PORT = 4000;
     try{
         // Server Setup
         app.listen(PORT,console.log(`Server started on port ${PORT}`));

@@ -11,8 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.21.1",
-    "mongodb": "^6.11.0",
-    "mongodb-memory-server": "^10.1.2",
-    "mongoose": "^8.8.2"
+    "mongodb": "6.1.0",
+    "mongodb-memory-server": "8.0.1",
+    "mongoose": "^8.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2"
   }
 }

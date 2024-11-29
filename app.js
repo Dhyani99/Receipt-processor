@@ -9,10 +9,8 @@ app.use(express.json());
 connectToDatabase().then(() => {
     app.use('/receipts', receiptRouter);
     
-    // Port Number
     const PORT = 4000;
     try{
-        // Server Setup
         app.listen(PORT,console.log(`Server started on port ${PORT}`));
     }catch(error){
         console.log("Can't connect to server");

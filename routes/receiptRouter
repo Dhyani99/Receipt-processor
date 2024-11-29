@@ -70,16 +70,7 @@ function calculatePoints(data) {
   if (time[0] >= 14 && time[0] <= 16) {
     points += 10;
   }
-  //   var purchaseTime = new Date();
-  //   purchaseTime.setHours(time[0], time[1], 0);
-  //   var startTime = new Date();
-  //   startTime.setHours(14,0,0);
-
-  //   var endTime = new Date();
-  //   endTime.setHours(16,0,0);
-  //   if(purchaseTime >= startTime && purchaseTime <= endTime){
-  //     points+=10;
-  //   }
+  
   return points;
 }
 
@@ -112,13 +103,9 @@ receiptRouter.post("/process", (req, res) => {
       .catch((error) => {
         return res.json({ error });
       });
-    //res.status(201).json({ id: result.insertedId });
   } catch (error) {
-    //console.log(error);
     res.status(400).json({ error: error.message });
   }
 });
-
-//})
 
 module.exports = receiptRouter;
